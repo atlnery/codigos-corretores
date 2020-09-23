@@ -4,11 +4,11 @@ void main(int argc, char** argv) {
 
     char mensagem[N]; int n;
 
-    printf("Digite a mensagem a ser enviada:\t ");
+    printf("\nDigite a mensagem a ser enviada:\t ");
     scanf("%[^\n]", mensagem);
     printf("Quantidade de bits a serem alterados:\t");
     scanf("%d", &n);
-
+    printf("\n");
     comunicacao(mensagem, n);
 
 }
@@ -34,6 +34,7 @@ void comunicacao(char* mensagem, int n) {
     ruido(spc, tam_spc, n);
     ruido(crc, tam_crc, n);
    
+    printf("\nMensagem com ruído\n");
     //mensagens recebidas
     printf("SPC:\t"); print(spc, tam_spc);
     printf("CRC:\t"); print(crc, tam_crc);
@@ -57,13 +58,14 @@ void comunicacao(char* mensagem, int n) {
 int ruido(int* m, int tam, int n) {
     if (n > tam) { return 0;}
 
-    srand(time(NULL));
+    int* v = random_vector_unique_elems(tam);
 
     for (int i = 0; i < n; i++) {
-        int r_pos = rand() % tam;
+        int r_pos = v[i];
         m[r_pos] = !m[r_pos];
     }
-
+    
+    free(v);
     return 1;
 }
 
