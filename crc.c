@@ -1,88 +1,76 @@
+#include <stdio.h>
+
 #include "crc.h"
 
+//CRC: polinômio gerador x³ + 1
 int G[SIZEG] = {1, 0, 0, 1};
 
 int* codificar_CRC(int* original, int n) {
     if (n < SIZEG) { return NULL; }
-    
-    int bits = SIZEG - 1;
+  
+    int grauDivisor = SIZEG - 1;
 
-    int * crc = new(n + bits);
-    memcpy(crc, original, n * sizeof(int));
-    
-    int* rest = dividir_CRC(crc, n);
-    
-    int pos = verificar_resto_CRC(rest);
-    if (pos > 1) { pos = 1; }
-    memcpy(&crc[n], &rest[pos], bits * sizeof(int));
-    
-    free(rest);
-    return crc;
+    int* copia = calloc(grauDivisor + n, sizeof(int));
+    memcpy(copia, original, n * sizeof(int));
+    int tamCRC = n + grauDivisor;
+
+    dividir_CRC(copia, tamCRC);
+
+    memcpy(copia, original, n * sizeof(int));
+
+    return copia;
 }
 
-int verificar_erros_CRC(int* crc, int n) {
-    int* rest = dividir_CRC(crc, n);
-    int bits0 = 0;
+static void dividir_CRC(int* crc, int tamCRC) {
 
-    for(int i = 0; i < SIZEG; i++) {
-        if(!rest[i]) { bits0++; }
-    }
+    int grauDivisor = SIZEG - 1;
+    int inicio = 0;
+    int fim = grauDivisor;
+    int limite = tamCRC - 1;
 
-    if(bits0 == SIZEG) { return 0; }
-
-    return 1;
-}
-
-int* dividir_CRC(int* crc, int n) {
-    int* rest = new(SIZEG);
-    memcpy(rest, crc, SIZEG * sizeof(int));
-
-    int point = SIZEG; int x;
-    
-    while (point <= n) {
-        subtrair_CRC(rest);
-        if (point != n) {
-            x = clean(rest);
-            rest[x++] = crc[point++];  
-            while (x < SIZEG) {
-                rest[x++] = crc[point++];  
-            }        
+    while (fim < limite) {
+        inicio = verifica_bits(crc, tamCRC);
+        fim = inicio + grauDivisor;
+        if (fim > limite) {
+            break;
         }
-        else { point++;}
+        subtrair_CRC(crc, inicio);
     }
-
-    return rest;
 }
 
-void subtrair_CRC(int* rest) {
+
+static void subtrair_CRC(int* crc, int inicio) {
     for (int i = 0; i < SIZEG; i++) {
-        rest[i] = rest[i] ^ G[i];
+        crc[inicio++] ^= G[i];
     }
 }
 
-int clean(int* rest) {
-    int i; 
+int verifica_bits(int* crc, int tamCRC) {
+    if (!crc || tamCRC < 1) return -1;
 
-    int j = verificar_resto_CRC(rest);
+    int i = 0;
+    while (!crc[i]) {
+        if (i >= tamCRC) {
+            break;
+        }
+        i++;
+    }
 
-    if (j == 0) { return -1; }
-
-    int *temp = new(SIZEG);
-   
-    for (i = 0; j < SIZEG; j++, i++) {
-        temp[i] = rest[j];
-    }    
-    
-    memcpy(rest, temp, SIZEG * sizeof(int));
-    free(temp);
     return i;
 }
 
-int verificar_resto_CRC(int* v) {
-    int j = 0;
+int verificar_erros_CRC(int* crc, int tamCRC) {
+    
+    dividir_CRC(crc, tamCRC);
 
-    while (v[j] == 0) { j++; }
+    int resto = tamCRC - SIZEG+1;
+    
+    for (; resto < tamCRC; resto++) {
+        if (crc[resto])
+            return 1;
+    }
 
-    return j;
+    return 0;
+    
 }
 

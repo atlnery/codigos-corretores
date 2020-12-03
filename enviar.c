@@ -8,17 +8,15 @@ void main(int argc, char** argv) {
     scanf("%[^\n]", mensagem);
     printf("Quantidade de bits a serem alterados:\t");
     scanf("%d", &n);
-    printf("\n");
+   
     comunicacao(mensagem, n);
-
 }
 
-void comunicacao(char* mensagem, int n) {
-     
+void comunicacao(char* mensagem, int n) { 
     int* original = copy(mensagem);
     int tam_original = strlen(mensagem);
     
-    //codificar
+    //codificar    
     int* crc = codificar_CRC(original, tam_original);
     int* spc = codificar_SPC(original, tam_original);
     
@@ -27,7 +25,8 @@ void comunicacao(char* mensagem, int n) {
     int tam_crc = tam_original-1 + SIZEG;
 
     //mensagens enviadas
-    printf("SPC:\t"); print(spc, tam_spc);
+    printf("\nMensagem codificada");
+    printf("\nSPC:\t"); print(spc, tam_spc);
     printf("CRC:\t"); print(crc, tam_crc);
 
     //causar ruídos
@@ -35,19 +34,30 @@ void comunicacao(char* mensagem, int n) {
     ruido(crc, tam_crc, n);
    
     printf("\nMensagem com ruído\n");
-    //mensagens recebidas
+    // //mensagens recebida
     printf("SPC:\t"); print(spc, tam_spc);
     printf("CRC:\t"); print(crc, tam_crc);
 
     //detectar erros
+    clock_t inicio, fim;
+    double tempo1, tempo2;
+
+    inicio = clock();
     int spc_deteccao = verificar_erros_SPC(spc, tam_spc);
+    tempo1 = (double) (clock() - inicio) / (CLOCKS_PER_SEC / 1000) ;
+
+    inicio = clock();
     int crc_deteccao = verificar_erros_CRC(crc, tam_crc);
+    tempo2 = (double) (clock() - inicio) / (CLOCKS_PER_SEC / 1000) ;
 
     //verificar se código detectou erro 
-    printf("\nSPC \t: ");
-    erro(spc_deteccao);    
-    printf("CRC \t: ");
+    printf("\nSPC: \t");
+    erro(spc_deteccao);   
+    printf("tempo de execução: %.3f s\n\n", tempo1);
+ 
+    printf("CRC: \t");
     erro(crc_deteccao);
+    printf("tempo de execução: %.3f s\n", tempo2);
     
     free(crc);
     free(spc);

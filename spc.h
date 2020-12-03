@@ -7,7 +7,4 @@
     int verificar_erros_SPC(int* spc, int n);
     int verificar_bits_SPC(int* v, int n);
 
-
-
-
 #endif

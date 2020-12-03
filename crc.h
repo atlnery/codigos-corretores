@@ -7,10 +7,9 @@
     #define SIZEG 4
 
     int* codificar_CRC(int* original, int n);
-    int verificar_erros_CRC(int* crc, int n);
-    int* dividir_CRC(int* crc, int n);
-    void subtrair_CRC(int* rest);
-    int clean(int* rest);
-    int verificar_resto_CRC(int* v);    
+    int verifica_bits(int* crc, int tamCRC);
+    static void dividir_CRC(int* crc, int tamCRC);
+    static void subtrair_CRC(int* crc, int inicio);
+    int verificar_erros_CRC(int* crc, int tamCRC);
     
 #endif

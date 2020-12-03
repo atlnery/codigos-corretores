@@ -5,6 +5,8 @@ int* codificar_SPC(int* original, int n) {
     
     memcpy(spc, original, n * sizeof(int));
 
+    //printf("SPC: Paridade par\n");
+
     int bits1 = verificar_bits_SPC(original, n);
     
     spc[n] = (bits1 % 2) ? 1 : 0;

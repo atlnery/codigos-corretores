@@ -11,9 +11,9 @@ void print(int* v, int n) {
 int* copy(char * m) {
     int size = strlen(m); 
     int* v = new(size);
-
+    
     for (int i = 0; i < size; i++) {
-        v[i] = (int) m[i] % 2;       
+        v[i] = (int) m[i] % 2;  
     }    
 
     return v;
@@ -40,7 +40,6 @@ int * random_vector_unique_elems(int n) {
 
 
 void shuffle(int *v, int ini, int fim) {
-
     int i, j;
 
     for(i = fim-1; i > ini; i--){
