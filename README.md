@@ -2,6 +2,8 @@
 
 ## Implementações de códigos detectores de erros SPC e CRC 
 
+  Este programa realiza a leitura de uma mensagem **binária** e a quantidade de erros causados de forma proposital para testar efetividade dos códigos detectores de erros *SPC* e *CRC*.
+
 ### Para compilar o programa:
 
 Usuários que tiverem o ambiente configurado em Linux, Windows ou outras plataformas, podem baixar os arquivos e utilizar o makefile para compilação.
